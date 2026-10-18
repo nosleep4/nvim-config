@@ -16,6 +16,22 @@ if vim.g.neovide then
   vim.keymap.set("i", "<C-S-CR>", "<C-o>O", { desc = "New line above and move to it" })
   vim.keymap.set("v", "<Tab>", ">gv", { desc = "Indent selection" })
   vim.keymap.set("v", "<S-Tab>", "<gv", { desc = "Unindent selection" })
+  vim.keymap.set("n", "<X1Mouse>", "<C-o>", { desc = "Jump back" })
+  vim.keymap.set("n", "<X2Mouse>", "<C-i>", { desc = "Jump forward" })
+  vim.keymap.set("n", "<A-c>", '"_ciw', { desc = "Change word (no yank)" })
+
+  -- AutoRefesh Opened projects buffers
+  vim.keymap.set("n", "<leader>bR", function()
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.bo[buf].buflisted and not vim.api.nvim_buf_is_loaded(buf) then
+      vim.fn.bufload(buf)
+    end
+  end
+  pcall(function()
+    require("neo-tree.sources.manager").refresh("buffers")
+  end)
+  end, { desc = "Load and refresh buffer tree" })
+
 end
 -- Keymaps are automatically loaded on the VeryLazy event
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
