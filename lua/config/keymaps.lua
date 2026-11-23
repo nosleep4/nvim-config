@@ -16,10 +16,23 @@ if vim.g.neovide then
   vim.keymap.set("i", "<C-S-CR>", "<C-o>O", { desc = "New line above and move to it" })
   vim.keymap.set("x", "<Tab>", ">gv", { desc = "Indent selection" })
   vim.keymap.set("x", "<S-Tab>", "<gv", { desc = "Unindent selection" })
-  vim.keymap.set("n", "<X1Mouse>", "<C-o>", { desc = "Jump back" })
-  vim.keymap.set("n", "<X2Mouse>", "<C-i>", { desc = "Jump forward" })
   vim.keymap.set("n", "<A-c>", '"_ciw', { desc = "Change word (no yank)" })
 
+  --change delete/change to not yank!
+  vim.keymap.set({ "n", "x" }, "d", '"_d', { desc = "Delete without yanking" })
+  vim.keymap.set("n", "dd", '"_dd', { desc = "Delete line without yanking" })
+  vim.keymap.set("n", "D", '"_D', { desc = "Delete to end of line without yanking" })
+  vim.keymap.set({ "n", "x" }, "c", '"_c', { desc = "Change without yanking" })
+
+  for _, prefix in ipairs({ "", "2-", "3-", "4-" }) do
+    -- plain back/forward: jumplist
+    vim.keymap.set("n", "<" .. prefix .. "X1Mouse>", "<C-o>", { desc = "Jump back" })
+    vim.keymap.set("n", "<" .. prefix .. "X2Mouse>", "<C-i>", { desc = "Jump forward" })
+
+    -- Ctrl + back/forward: switch buffers
+    vim.keymap.set("n", "<C-" .. prefix .. "X1Mouse>", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
+    vim.keymap.set("n", "<C-" .. prefix .. "X2Mouse>", "<cmd>bnext<cr>", { desc = "Next buffer" })
+  end
   -- AutoRefesh Opened projects buffers
   vim.keymap.set("n", "<leader>bR", function()
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
